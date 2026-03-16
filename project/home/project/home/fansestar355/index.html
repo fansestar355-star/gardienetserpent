@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expérience AR - Pilier</title>
+    <script
+      type="module"
+      src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"
+    ></script>
+
+    <style>
+       body {
+         margin: 0;
+         overflow: hidden;
+         font-family: "Segoe UI", sans-serif;
+         background: #fff;
+       }
+
+       model-viewer {
+         width: 100vw;
+         height: 100vh;
+         background-color: whitesmoke;
+
+       }
+
+       /* --- BOUTON SIGNIFICATION (Haut Droite) --- */
+       #btn-signification {
+         position: absolute;
+         top: 20px;
+         right: 20px;
+         padding: 12px 20px;
+         background: #f9d58b
+         color: #000;
+         border: 2px solid #000;
+         border-radius: 5px;
+         font-weight: bold;
+         cursor: pointer;
+         z-index: 100;
+       }
+
+       #tableau-info {
+         position: absolute;
+         top: 75px;
+         right: 20px;
+         width: 240px;
+         background: #f9d58b;
+         border-radius: 8px;
+         padding: 15px;
+         box-shadow: 0 10px 25px rgba(0, 3, 0, 3);
+         display: none;
+         z-index: 99;
+       }
+
+       #tableau-info.active {
+         display: block;
+       }
+
+       /* --- BOUTON AR (Au milieu en bas pour ne pas gêner la vue) --- */
+      /* --- BOUTON AR REHAUSSÉ POUR IPHONE --- */
+      #ar-button {
+             position: absolute;
+             bottom: 180px; /* On le remonte assez haut pour éviter la barre Safari et le bouton 'Open Sandbox' */
+             left: 50%;
+             transform: translateX(-50%);
+             padding: 16px 32px;
+             background-color: #f9d58b;
+             color: #55415b;
+             border: none;
+             border-radius: 50px;
+             font-size: 16px;
+             font-weight: bold;
+             cursor: pointer;
+             z-index: 99999; /* On met une valeur très haute pour passer devant tout */
+             display: flex;
+             align-items: center;
+             gap: 10px;
+             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+             white-space: nowrap;
+         }
+
+         /* Effet au clic pour être sûr qu'il réagit */
+         #ar-button:active {
+             background-color: #f9d58b;
+             transform: translateX(-50%) scale(0.95);
+         }
+       /* Petite icône AR simple */
+       #ar-button::before {
+         content: "view_in_ar";
+         font-family: "Material Icons"; /* Optionnel si tu importes les icones */
+         content: "📱";
+       }
+    </style>
+  </head>
+  <body>
+    <button id="btn-signification">SIGNIFICATION</button>
+
+    <div id="tableau-info">
+      <h2>Pilier au Gardien et au Serpent</h2>
+      <p>
+        un serpent sculpté s’enroule doucement au sommet du pilier, symbole du
+        Lébé, l’ancêtre devenu python qui veille et protège le sol des Dogons.
+        Au centre, une figure silencieuse observe, un esprit protecteur qui
+        garde la paix et l’équilibre du village. À la base, les motifs en zigzag
+        bougent comme l’eau ou comme les mots qui circulent entre les habitants,
+        portant la sagesse et les histoires. Chaque fois que les anciens se
+        réunissent ici, le pilier leur rappelle que leurs paroles doivent
+        protéger, unir et faire grandir la communauté. Pilier au Gardien et au
+        Serpent.
+      </p>
+    </div>
+
+    <model-viewer
+      id="pilier-viewer"
+      src="Mon_pilie.glb"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      camera-controls
+      shadow-intensity="1"
+      environment-image="neutral"
+      exposure="1"
+    >
+      <button slot="ar-button" id="ar-button">LANCER L'AR</button>
+
+      <div
+        id="ar-errors"
+        style="
+          display: none;
+          position: absolute;
+          bottom: 110px;
+          width: 100%;
+          text-align: center;
+          color: red;
+        "
+      >
+        AR non supporté sur ce navigateur
+      </div>
+    </model-viewer>
+
+    <script>
+      // Gestion du tableau Signification
+      const bouton = document.querySelector("#btn-signification");
+      const tableau = document.querySelector("#tableau-info");
+
+      bouton.addEventListener("click", () => {
+        tableau.classList.toggle("active");
+      });
+
+      // Gestion des erreurs AR
+      const viewer = document.querySelector("#pilier-viewer");
+      viewer.addEventListener("ar-status", (event) => {
+        if (event.detail.status === "failed") {
+          document.querySelector("#ar-errors").style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>
